@@ -8,6 +8,7 @@ import {
   onSnapshot,
   addDoc,
   serverTimestamp,
+  deleteDoc,
 } from "firebase/firestore";
 
 function App() {
@@ -50,10 +51,27 @@ function App() {
     const documentRef = await addDoc(usersCollectionRef, {
       name: name.value,
       email: email.value,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
     });
     console.log(documentRef);
   };
+
+  //ドキュメントの削除
+  const deleteUser = async (id) => {
+    const userDocumentRef = doc(db, "users", id);
+    await deleteDoc(userDocumentRef);
+  };
+
+  //idはわからないが、nameがわかるユーザーの削除
+  // const deleteUser = async (name) => {
+  //   const userCollectionRef = collection(db, 'users');
+  //   const q = query(userCollectionRef, where('name', '==', name));
+  //   const querySnapshot = await getDocs(q);
+  //   querySnapshot.forEach(async (document) => {
+  //     const userDocumentRef = doc(db, 'users', document.id);
+  //     await deleteDoc(userDocumentRef);
+  //   });
+  // };
 
   return (
     <div>
@@ -71,7 +89,10 @@ function App() {
         </div>
       </form>
       {users.map((user) => (
-        <div key={user.id}>{user.name}</div>
+        <div key={user.id}>
+          <span>{user.name}</span>
+          <button onClick={() => deleteUser(user.id)}>削除</button>
+        </div>
       ))}
     </div>
   );
