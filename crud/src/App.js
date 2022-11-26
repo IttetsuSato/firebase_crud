@@ -9,6 +9,7 @@ import {
   addDoc,
   serverTimestamp,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 function App() {
@@ -73,6 +74,14 @@ function App() {
   //   });
   // };
 
+  //
+  const changeAdmin = async (id, admin) => {
+    const userDocumentRef = doc(db, 'users', id);
+    await updateDoc(userDocumentRef, {
+      admin: !admin,
+    });
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -92,6 +101,8 @@ function App() {
         <div key={user.id}>
           <span>{user.name}</span>
           <button onClick={() => deleteUser(user.id)}>削除</button>
+          <button onClick={() => changeAdmin(user.id, user.admin)}>{user.admin ? "管理者" : "凡人"}</button>
+
         </div>
       ))}
     </div>
